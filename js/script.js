@@ -150,4 +150,38 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
     setClock('.timer', deadline);
+
+    // Modal
+
+    const modalTrigger = document.querySelectorAll('[data-modal]'),
+        modalContent = document.querySelector('.modal'),
+        modalCloseBtn = document.querySelector('[data-close]');
+
+    // 1) перебираем псевдомассив modalTrigger с помощью forEach
+    /* modalTrigger.forEach(btn => { // btn - каждая кнопка псевдомассива
+        btn.addEventListener('click', () => {
+            modalContent.classList.add('show'); // Добавляем при нажатии css класс который покажет окно
+            modalContent.classList.remove('hide'); // Удаляем класс скрывающий окно, иначе не откроется
+            document.body.style.overflow = 'hidden';
+        });
+    });
+
+    modalCloseBtn.addEventListener('click', () => {
+        modalContent.classList.remove('show');
+        modalContent.classList.add('hide');
+        document.body.style.overflow = 'hidden';
+    }); */
+
+    modalTrigger.forEach(btn => {
+        btn.addEventListener('click', () => {
+            modalContent.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        });
+    });
+
+    modalCloseBtn.addEventListener('click', () => {
+        modalContent.style.display = '';
+        document.body.style.overflow = '';
+    });
+
 });
