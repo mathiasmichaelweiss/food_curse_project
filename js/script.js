@@ -179,9 +179,33 @@ window.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    modalCloseBtn.addEventListener('click', () => {
+    // Так как одно и тоже действие повторяется, обязательно выводим его в функцию, так как перезаписывать плохой тон
+    function closemModalContent() {
         modalContent.style.display = '';
         document.body.style.overflow = '';
+    }
+
+    modalCloseBtn.addEventListener('click', closemModalContent); // теперь просто вписываем закрывающую функцию
+
+    // Заменили на верхнюю с использованием функции
+    /* modalCloseBtn.addEventListener('click', () => {
+        modalContent.style.display = '';
+        document.body.style.overflow = '';
+    }); */
+
+    modalContent.addEventListener('click', (e) => {
+        if (e.target === modalContent) {
+            /* modalContent.style.display = '';
+            document.body.style.overflow = ''; */ // так же как и выше, вызываем
+            // а не вписываем закрывающую функцию
+            closemModalContent();
+
+        }
     });
 
+    document.addEventListener('keydown', (e) => {
+        if (e.code === 'Escape') { // при моём способе не нужно использовать contains
+            closemModalContent();
+        }
+    });
 });
