@@ -1,44 +1,6 @@
-/* window.addEventListener('DOMContentLoaded', () => {
-    const tabs = document.querySelectorAll('.tabheader__item'),
-        tabsContent = document.querySelectorAll('.tabcontent'),
-        tabsParent = document.querySelector('.tabheader__items');
-
-    function hideTabContent() {
-        tabsContent.forEach(item => {
-            item.style.display = 'none'; // скрываем каждый контент таба при помощи стиля
-        });
-
-        tabs.forEach(item => {
-            item.classList.remove('tabheader__item_active'); // скрываем класс активности каждого таба
-        });
-    }
-
-    function showTabContent(i = 0) {
-        tabsContent[i].style.display = 'block'; // добавляем определенный [i] контент при помощи стиля
-        tabs[i].classList.add('tabheader__item_active'); // добавляем к определенному [i] контенту класс активности
-    }
-    hideTabContent();
-    showTabContent();
-
-    tabsParent.addEventListener('click', (event) => {
-        const target = event.target;
-
-        if (target && target.classList.contains('tabheader__item')) {
-            tabs.forEach((item, i) => {
-                if (target == item) {
-                    hideTabContent();
-                    showTabContent(i);
-                }
-            });
-        }
-
-    });
-
-
-}); */
+'use strict';
 
 // Tabs
-
 window.addEventListener('DOMContentLoaded', () => {
     const tabs = document.querySelectorAll('.tabheader__item'),
         tabsContent = document.querySelectorAll('.tabcontent'),
@@ -87,7 +49,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // Timer 
 
-    const deadline = '2020-07-20';
+    const deadline = '2020-08-20';
 
     // Функция рассчитывающая разницу между сейчас и дедлайном(результат отоброжаемый на странице)
 
@@ -157,35 +119,26 @@ window.addEventListener('DOMContentLoaded', () => {
         modalContent = document.querySelector('.modal'),
         modalCloseBtn = document.querySelector('[data-close]');
 
-    // 1) перебираем псевдомассив modalTrigger с помощью forEach
-    /* modalTrigger.forEach(btn => { // btn - каждая кнопка псевдомассива
-        btn.addEventListener('click', () => {
-            modalContent.classList.add('show'); // Добавляем при нажатии css класс который покажет окно
-            modalContent.classList.remove('hide'); // Удаляем класс скрывающий окно, иначе не откроется
-            document.body.style.overflow = 'hidden';
-        });
-    });
 
-    modalCloseBtn.addEventListener('click', () => {
-        modalContent.classList.remove('show');
-        modalContent.classList.add('hide');
+
+    // Так как одно и тоже действие будет повторяется, обязательно выводим его в функцию
+    function openModalContent() {
+        modalContent.style.display = 'block';
         document.body.style.overflow = 'hidden';
-    }); */
+        clearInterval(modalContentTimerId);
+    }
 
-    modalTrigger.forEach(btn => {
-        btn.addEventListener('click', () => {
-            modalContent.style.display = 'block';
-            document.body.style.overflow = 'hidden';
-        });
-    });
-
-    // Так как одно и тоже действие повторяется, обязательно выводим его в функцию, так как перезаписывать плохой тон
-    function closemModalContent() {
+    function closeModalContent() {
         modalContent.style.display = '';
         document.body.style.overflow = '';
     }
 
-    modalCloseBtn.addEventListener('click', closemModalContent); // теперь просто вписываем закрывающую функцию
+    // 1) перебираем псевдомассив modalTrigger с помощью forEach
+    modalTrigger.forEach(btn => {
+        btn.addEventListener('click', openModalContent);
+    });
+
+    modalCloseBtn.addEventListener('click', closeModalContent); // теперь просто вписываем закрывающую функцию
 
     // Заменили на верхнюю с использованием функции
     /* modalCloseBtn.addEventListener('click', () => {
@@ -198,14 +151,25 @@ window.addEventListener('DOMContentLoaded', () => {
             /* modalContent.style.display = '';
             document.body.style.overflow = ''; */ // так же как и выше, вызываем
             // а не вписываем закрывающую функцию
-            closemModalContent();
+            closeModalContent();
 
         }
     });
 
     document.addEventListener('keydown', (e) => {
         if (e.code === 'Escape') { // при моём способе не нужно использовать contains
-            closemModalContent();
+            closeModalContent();
         }
     });
+
+    const modalContentTimerId = setTimeout(openModalContent, 3000);
+
+    function showModalContentByScroll() {
+        if (window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight) {
+            openModalContent();
+            window.removeEventListener('scroll', showModalContentByScroll);
+        }
+    }
+
+    window.addEventListener('scroll', showModalContentByScroll);
 });
