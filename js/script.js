@@ -116,9 +116,7 @@ window.addEventListener('DOMContentLoaded', () => {
     // Modal
 
     const modalTrigger = document.querySelectorAll('[data-modal]'),
-        modalContent = document.querySelector('.modal'),
-        modalCloseBtn = document.querySelector('[data-close]');
-
+        modalContent = document.querySelector('.modal');
 
 
     // Так как одно и тоже действие будет повторяется, обязательно выводим его в функцию
@@ -138,7 +136,6 @@ window.addEventListener('DOMContentLoaded', () => {
         btn.addEventListener('click', openModalContent);
     });
 
-    modalCloseBtn.addEventListener('click', closeModalContent); // теперь просто вписываем закрывающую функцию
 
     // Заменили на верхнюю с использованием функции
     /* modalCloseBtn.addEventListener('click', () => {
@@ -147,7 +144,7 @@ window.addEventListener('DOMContentLoaded', () => {
     }); */
 
     modalContent.addEventListener('click', (e) => {
-        if (e.target === modalContent) {
+        if (e.target === modalContent || e.target.getAttribute('data-close') == '') {
             /* modalContent.style.display = '';
             document.body.style.overflow = ''; */ // так же как и выше, вызываем
             // а не вписываем закрывающую функцию
@@ -162,7 +159,7 @@ window.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    const modalContentTimerId = setTimeout(openModalContent, 3000);
+    const modalContentTimerId = setTimeout(openModalContent, 50000);
 
     function showModalContentByScroll() {
         if (window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight) {
@@ -246,5 +243,89 @@ window.addEventListener('DOMContentLoaded', () => {
         'menu__item'
 
     ).render();
+
+    // Forms 
+
+    const forms = document.querySelectorAll('form');
+
+    const message = {
+        loading: 'img/form/spinner.gif',
+        succes: 'Мы скоро с Вами свяжемся!',
+        failure: 'Что-то пошло не так...'
+    };
+
+    forms.forEach(item => {
+        postData(item);
+    });
+
+    function postData(form) {
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const statusMessage = document.createElement('img');
+            statusMessage.src = message.loading;
+            statusMessage.style.cssText = `
+            display: block;
+            margin: 0 auto;
+            margin-top: 5 px;
+            width: 25px;
+            height: 25px;
+            `;
+            form.insertAdjacentElement('afterend', statusMessage);
+
+            const request = new XMLHttpRequest();
+            request.open('POST', 'server.php');
+            request.setRequestHeader('Content-type', 'application/json'); // если нужно перевести в json // без этого для php
+            const formData = new FormData(form);
+
+            const object = {}; // если нужно перевести в json // без этого для php
+            formData.forEach(function (value, key) { // если нужно перевести в json // без этого для php
+                object[key] = value;
+            });
+
+            const json = JSON.stringify(object); // если нужно перевести в json // без этого для php
+
+            /* request.send(formData); */ // для php 
+            request.send(json); // если нужно перевести в json // без этого для php
+
+            request.addEventListener('load', () => {
+                if (request.status === 200) {
+                    console.log(request.response);
+                    showThanksModal(message.succes);
+                    statusMessage.remove();
+                    form.reset();
+
+                } else {
+                    showThanksModal(message.failure);
+                }
+            });
+        });
+    }
+
+    function showThanksModal(message) {
+        const prevModalDialog = document.querySelector('.modal__dialog');
+
+        prevModalDialog.classList.add('hide');
+        openModalContent();
+
+        const thanksModal = document.createElement('div');
+        thanksModal.classList.add('modal__dialog');
+
+        thanksModal.innerHTML = `
+        <div class="modal__content">
+            <div class="modal__close" data-close>×</div>
+            <div class="modal__title">${message}</div>
+        </div>
+        `;
+
+        document.querySelector('.modal').append(thanksModal);
+
+        setTimeout(() => {
+            thanksModal.remove();
+            prevModalDialog.classList.add('show');
+            prevModalDialog.classList.remove('hide');
+            closeModalContent();
+        }, 4000);
+    }
 
 });
