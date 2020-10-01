@@ -1,7 +1,4 @@
-function timer() {
-    // Timer 
-
-    const deadline = '2020-08-20';
+function timer(id, deadline) {
 
     // Функция рассчитывающая разницу между сейчас и дедлайном(результат отоброжаемый на странице)
 
@@ -63,7 +60,7 @@ function timer() {
         }
     }
 
-    setClock('.timer', deadline);
+    setClock(id, deadline);
 }
 
-module.exports = timer;
+export default timer;

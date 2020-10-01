@@ -1,50 +1,40 @@
-function tabs() {
-    // Tabs
+function tabs(tabsSelector, tabsContentSelector, tabsParentSelector, activeClass) {
+	let tabs = document.querySelectorAll(tabsSelector),
+		tabsContent = document.querySelectorAll(tabsContentSelector),
+		tabsParent = document.querySelector(tabsParentSelector);
 
-    const tabs = document.querySelectorAll('.tabheader__item'),
-        tabsContent = document.querySelectorAll('.tabcontent'),
-        tabsParent = document.querySelector('.tabheader__items');
-
-    function hideTabContent() {
+	function hideTabContent() {
+        
         tabsContent.forEach(item => {
-            item.style.display = 'none'; // скрываем контент вкладки 
+            item.classList.add('hide');
+            item.classList.remove('show', 'fade');
         });
 
         tabs.forEach(item => {
-            item.classList.remove('tabheader__item_active'); // Удаляем внутри класслиста класс активности кнопки
+            item.classList.remove(activeClass);
         });
-    }
+	}
 
-    function showTabContent(i = 0) { // i - определенный таб (i = 0, значит что если не выбрано то по умолчанию 0)
-        tabsContent[i].style.display = 'block'; // возвращаем определенный контент
-        tabs[i].classList.add('tabheader__item_active'); // возвращаем определенной ссылке меню класс актив
+	function showTabContent(i = 0) {
+        tabsContent[i].classList.add('show', 'fade');
+        tabsContent[i].classList.remove('hide');
+        tabs[i].classList.add(activeClass);
     }
-
+    
     hideTabContent();
     showTabContent();
 
-    /* Сейчас при помощи делегирования событий я сделаю событие клика на родителя меню, при помощи event.target где
-    event это каждое событие клика, а таргет это определенная цель на которую кликают внутри блока
-    с этими целями */
-
-    tabsParent.addEventListener('click', (event) => {
-        const target = event.target; // создаем переменную что бы постоянно не писать event.target
-
-        if (target && target.classList.contains('tabheader__item')) {
-            tabs.forEach((item, i) => { // item - каждый элемент i порядковый номер элемента
-                if (target == item) { // если элемент который кликнули == одному из перебираемых элементов - то...
-                    hideTabContent(); // то выполнится функция и скроются все элементы
-                    showTabContent(i); // то выполнится функция и покажется элемент по которому кликнули
+	tabsParent.addEventListener('click', function(event) {
+        const target = event.target;
+		if(target && target.classList.contains(tabsSelector.slice(1))) {
+            tabs.forEach((item, i) => {
+                if (target == item) {
+                    hideTabContent();
+                    showTabContent(i);
                 }
             });
-        }
+		}
     });
-
-    /* target.classList.contains = classList - обращается ко всем классам элемента, в нашем случае ко всем классам 
-    того элемента на который производится клик, contains - проверяет если ли данный класс у этого элемента, и если 
-    он будет if(target &&(и) target.classList.contains('tabheader__item')), тогда выполнится дейтствие которое мы 
-    зададим. Необходимо что бы при клике на объект определился номер элемента и этот номер элемента 
-    использовался в функции showTabContent*/
 }
 
-module.exports = tabs;
+export default tabs;
