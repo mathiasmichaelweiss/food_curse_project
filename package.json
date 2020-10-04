@@ -17,8 +17,17 @@
   },
   "homepage": "https://github.com/mathiasweiss1488/food_curse_project#readme",
   "devDependencies": {
+    "@babel/cli": "^7.11.6",
+    "@babel/core": "^7.11.6",
+    "@babel/preset-env": "^7.11.5",
+    "babel": "^6.23.0",
+    "core-js": "^3.6.5",
     "json-server": "^0.16.1",
+    "loader": "^2.1.1",
     "webpack": "^4.44.2",
     "webpack-cli": "^3.3.12"
+  },
+  "dependencies": {
+    "@babel/polyfill": "^7.11.5"
   }
 }
